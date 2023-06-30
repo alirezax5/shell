@@ -56,7 +56,6 @@ PKG=(
   php8.1
   php8.1-curl
   php8.1-zip
-  php8.1-sqlite3
   php8.1-sqlite
   sqlite
   sqlite3
@@ -74,7 +73,6 @@ for i in "${PKG[@]}"; do
     apt install $i -y
     if [ $? -ne 0 ]; then
       echo "Error installing $i"
-      exit 1
     fi
   fi
 done
