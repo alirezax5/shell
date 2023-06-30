@@ -54,7 +54,6 @@ PKG=(
   apache2
   php-mbstring
   php8.1
-  php8.1-json
   php8.1-curl
   php8.1-zip
   php8.1-sqlite3
