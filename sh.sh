@@ -11,48 +11,24 @@ updateServer() {
   echo -e "${green} server is updated ${plain}"
 }
 
-installApache() {
-  echo -e "${yellow} install apache2 ... ${plain}"
-  apt install apache2 -y
-  echo -e "${green} apache2 installed"
-  chown -R www-data: /var/www/
-  echo -e "${green} chown /var/www/ ${plain}"
-
-}
-installZip() {
-  echo -e "${yellow} install zip unzip ... ${plain}"
-  sudo apt install zip unzip -y
-  echo -e "${green} zip unzip installed ${plain}"
-
-}
-
-installCronJob() {
-  echo -e "${yellow} install cron ... ${plain}"
-  sudo apt install cron
+setUpCronJob() {
+  echo -e "${yellow} setup ... ${plain}"
   sudo systemctl enable cron
   sleep 2
-
   (
     crontab -l
     echo "0 * * * * /usr/bin/php /var/www/html/api/sendBackupOnTel.php"
   ) | sort -u | crontab -
-  echo -e "${green} cron installed ${plain}"
+  echo -e "${green} cron has  enable${plain}"
 
 }
-installPhp() {
-  echo -e "${yellow} install php ... ${plain}"
+addrepositoryPhp() {
+  echo -e "${yellow} add repository ... ${plain}"
   apt install software-properties-common
   add-apt-repository ppa:ondrej/php
   apt update -y
   sleep 2
-  apt install php8.1 -y
-  sleep 2
-  apt install php8.1-curl -y
-  sleep 2
-  apt install sqlite -y
-  sleep 2
-  apt install sqlite3 -y
-  echo -e "${green} php sqlite3 curl installed ${plain}"
+  echo -e "${green} repository adedd ${plain}"
 
 }
 chmodXuiDb() {
@@ -72,9 +48,38 @@ rewriteMode() {
 
 }
 updateServer
-installApache
-installZip
-installCronJob
-installPhp
+addrepositoryPhp
+
+PKG=(
+  apache2
+  php-mbstring
+  php8.1
+  php8.1-json
+  php8.1-curl
+  php8.1-zip
+  php8.1-sqlite3
+  php8.1-sqlite
+  sqlite
+  sqlite3
+  zip
+  unzip
+  cron
+)
+bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install_en.sh)
+
+for i in "${PKG[@]}"; do
+  dpkg -s $i &>/dev/null
+  if [ $? -eq 0 ]; then
+    echo "$i is already installed"
+  else
+    apt install $i -y
+    if [ $? -ne 0 ]; then
+      echo "Error installing $i"
+      exit 1
+    fi
+  fi
+done
+
+setUpCronJob
 chmodXuiDb
 rewriteMode
