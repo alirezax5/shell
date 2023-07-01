@@ -63,7 +63,6 @@ PKG=(
   unzip
   cron
 )
-bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install_en.sh)
 
 for i in "${PKG[@]}"; do
   dpkg -s $i &>/dev/null
