@@ -47,7 +47,7 @@ rewriteMode() {
   echo -e "${green} rewrite ended ${plain}"
 
 }
-updateServer
+
 addrepositoryPhp
 
 PKG=(
